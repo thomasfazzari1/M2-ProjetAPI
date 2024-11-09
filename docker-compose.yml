@@ -14,16 +14,29 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
 
-  # ToDo : autres microservices
-
   api_gateway:
     build:
       context: ./api_gateway
+    env_file:
+      - .env
     ports:
       - "5000:5000"
     depends_on:
-      # ToDo : autres microservices
       - utilisateur
+    environment:
+      - UTILISATEUR_SERVICE_URL=${UTILISATEUR_SERVICE_URL}
+
+  frontend:
+    build:
+      context: ./frontend
+    env_file:
+      - .env
+    ports:
+      - "5002:5000"
+    depends_on:
+      - api_gateway
+    environment:
+      - API_GATEWAY_URL=${API_GATEWAY_URL}
 
 volumes:
   mysql_data:
