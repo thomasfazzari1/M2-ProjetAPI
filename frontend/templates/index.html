@@ -3,6 +3,15 @@
 {% block title %}Accueil | The Real Deal{% endblock %}
 
 {% block content %}
-    <h1 class="text-3xl font-bold mb-4">Bienvenue sur The Real Deal</h1>
-    <p class="text-lg">Inscrivez-vous et commencez à parier dès maintenant !</p>
+    {% if not session.get('user_id') %}
+        <h1 class="text-3xl font-bold mb-4">Bienvenue sur The Real Deal</h1>
+        <p class="text-lg">Inscrivez-vous et commencez à parier dès maintenant !</p>
+    {% else %}
+        <h1 class="text-3xl font-bold mb-4">Bienvenue, {{ session.get('pseudo') }}</h1>
+        {% if session.get('is_bookmaker') %}
+            <p class="text-lg">Accédez à votre tableau de bord et fixez des côtes dès maintenant !</p>
+        {% else %}
+            <p class="text-lg">Explorez les paris disponibles dès maintenant !</p>
+        {% endif %}
+    {% endif %}
 {% endblock %}

@@ -1,21 +1,26 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}The Real Deal{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-
 <body class="bg-gray-100 text-gray-900">
-
 <nav class="bg-red-600 text-white py-4">
     <div class="container mx-auto flex justify-between items-center">
         <a href="/" class="text-2xl font-bold">The Real Deal</a>
         <ul class="flex space-x-6">
             <li><a href="/" class="hover:underline">Accueil</a></li>
-            <li><a href="{{ url_for('utilisateur.register') }}" class="hover:underline">Inscription</a></li>
+            {% if session.get('user_id') %}
+                {% if session.get('is_bookmaker') %}
+                    <li><a href="" class="hover:underline">Espace Bookmaker</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('utilisateur.logout') }}" class="hover:underline">Déconnexion</a></li>
+            {% else %}
+                <li><a href="{{ url_for('utilisateur.register') }}" class="hover:underline">Inscription</a></li>
+                <li><a href="{{ url_for('utilisateur.login') }}" class="hover:underline">Connexion</a></li>
+            {% endif %}
         </ul>
     </div>
 </nav>
@@ -23,7 +28,5 @@
 <main class="container mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
     {% block content %}{% endblock %}
 </main>
-
 </body>
-
 </html>
