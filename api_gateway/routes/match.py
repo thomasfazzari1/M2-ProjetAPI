@@ -16,3 +16,21 @@ def create_sport():
 def get_all_sports():
     response = requests.get(f"{MATCH_SERVICE_URL}/get_all_sports")
     return jsonify(response.json()), response.status_code
+
+
+@match_bp.route('/delete_sport', methods=['POST'])
+def delete_sport():
+    response = requests.post(f"{MATCH_SERVICE_URL}/delete_sport", json=request.get_json())
+    return jsonify(response.json()), response.status_code
+
+
+@match_bp.route('/create_evenement', methods=['POST'])
+def create_evenement():
+    response = requests.post(f"{MATCH_SERVICE_URL}/create_evenement", json=request.get_json())
+    return jsonify(response.json()), response.status_code
+
+
+@match_bp.route('/get_all_evenements', methods=['GET'])
+def get_all_evenements():
+    response = requests.get(f"{MATCH_SERVICE_URL}/get_all_evenements")
+    return jsonify(response.json()), response.status_code

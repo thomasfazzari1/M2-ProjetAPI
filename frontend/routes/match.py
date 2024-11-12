@@ -27,3 +27,46 @@ def ajouter_sport():
     sports = response.json()
 
     return render_template('utilisateur/bookmaker/ajouter_sport.html', sports=sports)
+
+
+@match_bp.route('/supprimer_sport/<int:sport_id>', methods=['POST'])
+def supprimer_sport(sport_id):
+    response = requests.post(f"{API_GATEWAY_URL}/delete_sport", json={
+        "sport_id": sport_id
+    })
+
+    if response.status_code == 200:
+        flash("Sport supprimé avec succès.", "success")
+    elif response.status_code == 404:
+        flash("Sport non trouvé.", "warning")
+
+    return redirect(url_for('match.ajouter_sport'))
+
+
+@match_bp.route('/ajouter_evenement', methods=['GET', 'POST'])
+def ajouter_evenement():
+    if request.method == 'POST':
+        nom = request.form['nom']
+        id_sport_associe = request.form['id_sport_associe']
+
+        response = requests.post(f"{API_GATEWAY_URL}/create_evenement", json={
+            "nom": nom,
+            "id_sport_associe": id_sport_associe
+        })
+
+        if response.status_code == 201:
+            flash("Événement créé avec succès.", "success")
+        else:
+            flash("Erreur lors de la création de l'événement.", "danger")
+
+    response = requests.get(f"{API_GATEWAY_URL}/get_all_evenements")
+    evenements = response.json()
+
+    response = requests.get(f"{API_GATEWAY_URL}/get_all_sports")
+    sports = response.json()
+
+    for evenement in evenements:
+        sport_associe = next((sport for sport in sports if sport['id'] == evenement['id_sport_associe']), None)
+        evenement['sport_nom'] = sport_associe['nom'] if sport_associe else "Sport inconnu"
+
+    return render_template('utilisateur/bookmaker/ajouter_evenement.html', sports=sports, evenements=evenements)

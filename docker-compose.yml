@@ -50,6 +50,8 @@ services:
       - api_gateway
     environment:
       - API_GATEWAY_URL=${API_GATEWAY_URL}
+    volumes:
+      - ./frontend:/app/frontend
 
 volumes:
   mysql_data:

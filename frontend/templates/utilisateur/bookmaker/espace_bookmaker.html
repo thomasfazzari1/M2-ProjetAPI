@@ -3,88 +3,95 @@
 {% block title %}Espace Bookmaker | The Real Deal{% endblock %}
 
 {% block content %}
-    {% if (session.get('user_id')) and (session.get('is_bookmaker')) %}
-        <h1 class="text-3xl font-bold mb-4">Bienvenue sur votre tableau de bord !</h1>
-        <p class="text-lg">Vous pouvez ajouter des matchs et gérer leurs côtes.</p>
+{% if (session.get('user_id')) and (session.get('is_bookmaker')) %}
+<h1 class="text-3xl font-bold mb-4">Bienvenue sur votre tableau de bord !</h1>
+<p class="text-lg">Vous pouvez ajouter des matchs et gérer leurs côtes.</p>
 
-        <div class="mt-6 flex space-x-4">
-            <a href="{{ url_for('match.ajouter_sport') }}" class="bg-red-600 text-white py-2 px-4 rounded">
-                Ajouter un sport
-            </a>
-            <a href="" class="bg-red-600 text-white py-2 px-4 rounded">
-                Ajouter un évènement
-            </a>
-            <a href="" class="bg-red-600 text-white py-2 px-4 rounded">
-                Ajouter un match
-            </a>
-            <a href="" class="bg-red-600 text-white py-2 px-4 rounded">
-                Ajouter une équipe
-            </a>
-        </div>
+<div class="mt-6 flex space-x-4">
+    <a href="{{ url_for('match.ajouter_sport') }}" class="bg-red-600 text-white py-2 px-4 rounded">
+        Ajouter un sport
+    </a>
+    <a href="{{ url_for('match.ajouter_evenement') }}" class="bg-red-600 text-white py-2 px-4 rounded">
+        Ajouter un évènement
+    </a>
+    <a href="" class="bg-red-600 text-white py-2 px-4 rounded">
+        Ajouter une équipe
+    </a>
+    <a href="" class="bg-red-600 text-white py-2 px-4 rounded">
+        Ajouter un match
+    </a>
+</div>
 
-        <div class="mt-10">
-            <h2 class="text-2xl font-bold mb-4">Matchs à venir</h2>
+<div class="mt-10">
+    <h2 class="text-2xl font-bold mb-4">Matchs à venir</h2>
 
-            <div class="mb-6">
-                <label for="sport-filter" class="text-lg font-semibold mr-2">Filtrer par sport :</label>
-                <select id="sport-filter" name="sport-filter" class="border border-gray-300 rounded px-3 py-2">
-                    {% for sport in sports %}
-                        <option value="{{ sport['id'] }}">{{ sport['nom'] }}</option>
-                    {% endfor %}
-                </select>
-            </div>
+    <div class="mb-6">
+        <label for="sport-filter" class="text-lg font-semibold mr-2">Filtrer par sport :</label>
+        <select id="sport-filter" name="sport-filter" class="border border-gray-300 rounded px-3 py-2">
+            {% for sport in sports %}
+            <option value="{{ sport['id'] }}">{{ sport['nom'] }}</option>
+            {% endfor %}
+        </select>
+    </div>
 
-            <table class="w-full border-collapse bg-white shadow-md rounded-lg">
-                <thead>
-                    <tr class="bg-gray-200 text-gray-700">
-                        <th class="py-3 px-4 border-b">Événement</th>
-                        <th class="py-3 px-4 border-b">Équipe Domicile</th>
-                        <th class="py-3 px-4 border-b">Côte Domicile</th>
-                        <th class="py-3 px-4 border-b">Équipe Extérieure</th>
-                        <th class="py-3 px-4 border-b">Côte Extérieure</th>
-                        <th class="py-3 px-4 border-b">Nombre de paris associés</th>
-                        <th class="py-3 px-4 border-b">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="text-center">
-                        <td class="py-3 px-4 border-b">Ligue 1</td>
-                        <td class="py-3 px-4 border-b">PSG</td>
-                        <td class="py-3 px-4 border-b">1.5</td>
-                        <td class="py-3 px-4 border-b">Marseille</td>
-                        <td class="py-3 px-4 border-b">2.8</td>
-                        <td class="py-3 px-4 border-b">0</td>
-                        <td class="py-3 px-4 border-b">
-                            <div class="flex space-x-2 justify-center">
-                                <a href="" class="flex items-center bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded transition-colors duration-200">
-                                    Modifier
-                                </a>
-                                <a href="" class="flex items-center bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded transition-colors duration-200">
-                                    Supprimer
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="text-center">
-                        <td class="py-3 px-4 border-b">Ligue des Champions</td>
-                        <td class="py-3 px-4 border-b">Real Madrid</td>
-                        <td class="py-3 px-4 border-b">1.7</td>
-                        <td class="py-3 px-4 border-b">Liverpool</td>
-                        <td class="py-3 px-4 border-b">3.0</td>
-                        <td class="py-3 px-4 border-b">0</td>
-                        <td class="py-3 px-4 border-b">
-                            <div class="flex space-x-2 justify-center">
-                                <a href="" class="flex items-center bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded transition-colors duration-200">
-                                    Modifier
-                                </a>
-                                <a href="" class="flex items-center bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded transition-colors duration-200">
-                                    Supprimer
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    {% endif %}
+    <table class="w-full border-collapse bg-white shadow-md rounded-lg">
+        <thead>
+        <tr class="bg-gray-200 text-gray-700">
+            <th class="py-3 px-4 border-b">Événement</th>
+            <th class="py-3 px-4 border-b">Équipe Domicile</th>
+            <th class="py-3 px-4 border-b">Côte Domicile</th>
+            <th class="py-3 px-4 border-b">Côte Match Nul</th>
+            <th class="py-3 px-4 border-b">Équipe Extérieure</th>
+            <th class="py-3 px-4 border-b">Côte Extérieure</th>
+            <th class="py-3 px-4 border-b">Nombre de paris associés</th>
+            <th class="py-3 px-4 border-b">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="text-center">
+            <td class="py-3 px-4 border-b">Ligue 1</td>
+            <td class="py-3 px-4 border-b">PSG</td>
+            <td class="py-3 px-4 border-b">1.5</td>
+            <td class="py-3 px-4 border-b">3</td>
+            <td class="py-3 px-4 border-b">Marseille</td>
+            <td class="py-3 px-4 border-b">2.8</td>
+            <td class="py-3 px-4 border-b">0</td>
+            <td class="py-3 px-4 border-b">
+                <div class="flex space-x-2 justify-center">
+                    <a href=""
+                       class="flex items-center bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded transition-colors duration-200">
+                        Modifier
+                    </a>
+                    <a href=""
+                       class="flex items-center bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded transition-colors duration-200">
+                        Supprimer
+                    </a>
+                </div>
+            </td>
+        </tr>
+        <tr class="text-center">
+            <td class="py-3 px-4 border-b">Ligue des Champions</td>
+            <td class="py-3 px-4 border-b">Real Madrid</td>
+            <td class="py-3 px-4 border-b">1.7</td>
+            <td class="py-3 px-4 border-b">1.2</td>
+            <td class="py-3 px-4 border-b">Liverpool</td>
+            <td class="py-3 px-4 border-b">3.0</td>
+            <td class="py-3 px-4 border-b">0</td>
+            <td class="py-3 px-4 border-b">
+                <div class="flex space-x-2 justify-center">
+                    <a href=""
+                       class="flex items-center bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded transition-colors duration-200">
+                        Modifier
+                    </a>
+                    <a href=""
+                       class="flex items-center bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded transition-colors duration-200">
+                        Supprimer
+                    </a>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+{% endif %}
 {% endblock %}

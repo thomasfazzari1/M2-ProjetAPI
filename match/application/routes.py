@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-from domaine.repositories import SportRepository
-from domaine.modeles import Sport
+from domaine.repositories import SportRepository, EvenementRepository
+from domaine.modeles import Sport, Evenement
 
 match_bp = Blueprint('match', __name__)
 
@@ -31,3 +31,44 @@ def create_sport():
 def get_all_sports():
     sports = SportRepository.get_all_sports()
     return jsonify(sports), 200
+
+
+@match_bp.route('/delete_sport', methods=['POST'])
+def delete_sport():
+    data = request.get_json()
+    sport_id = data.get("sport_id")
+
+    supprimes = SportRepository.delete(sport_id)
+    if supprimes == 0:
+        return jsonify({"success": False, "message": "Sport non trouvé."}), 404
+
+    return jsonify({"success": True, "message": "Sport supprimé avec succès."}), 200
+
+
+@match_bp.route('/create_evenement', methods=['POST'])
+def create_evenement():
+    data = request.get_json()
+    nom = data.get("nom")
+    id_sport_associe = data.get("id_sport_associe")
+
+    if not nom or not id_sport_associe:
+        return jsonify({"error": "Certains champs sont nuls."}), 400
+
+    try:
+        evenement = Evenement(nom=nom, id_sport_associe=id_sport_associe)
+        evenement_id = EvenementRepository.create(evenement)
+
+        if evenement_id is None:
+            return jsonify({"success": False, "message": "Erreur lors de la création de l'évènement."}), 500
+
+        return jsonify({"success": True, "message": "Evènement créé avec succès.", "evenement_id": evenement_id}), 201
+
+    except Exception as e:
+        print(f"Erreur lors de la création de l'évènement : {e}")
+        return jsonify({"error": "Erreur interne du serveur."}), 500
+
+
+@match_bp.route('/get_all_evenements', methods=['GET'])
+def get_all_evenements():
+    evenements = EvenementRepository.get_all_evenements()
+    return jsonify(evenements), 200

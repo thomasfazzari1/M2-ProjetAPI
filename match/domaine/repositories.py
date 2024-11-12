@@ -31,11 +31,48 @@ class SportRepository:
             cursor.close()
             connection.close()
 
+    @staticmethod
+    def delete(id):
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        try:
+            cursor.execute("DELETE FROM sport WHERE id = %s", (id,))
+            connection.commit()
+            return cursor.rowcount
+        finally:
+            cursor.close()
+            connection.close()
+
 
 class EvenementRepository:
     @staticmethod
     def create(evenement):
-        return
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        try:
+            cursor.execute(
+                "INSERT INTO evenement (nom, id_sport_associe) VALUES (%s, %s)",
+                (evenement.nom, evenement.id_sport_associe)
+            )
+            connection.commit()
+            evenement_id = cursor.lastrowid
+            return evenement_id
+        finally:
+            cursor.close()
+            connection.close()
+
+    @staticmethod
+    def get_all_evenements():
+        connection = get_db_connection()
+        cursor = connection.cursor(
+            dictionary=True)
+        try:
+            cursor.execute("SELECT * FROM evenement")
+            evenements = cursor.fetchall()
+            return evenements
+        finally:
+            cursor.close()
+            connection.close()
 
 
 class EquipeRepository:
@@ -47,16 +84,4 @@ class EquipeRepository:
 class MatchRepository:
     @staticmethod
     def create(match):
-        return
-
-
-class LieuRepository:
-    @staticmethod
-    def create(lieu):
-        return
-
-
-class CoteRepository:
-    @staticmethod
-    def create(cote):
         return
