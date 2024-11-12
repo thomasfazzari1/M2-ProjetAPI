@@ -42,3 +42,8 @@ def login():
         }), 200
 
     return jsonify({"error": "Email ou mot de passe incorrect."}), 401
+
+
+@utilisateur_bp.route('/espace_bookmaker', methods=['GET'])
+def espace_bookmaker():
+    return jsonify({}), 200

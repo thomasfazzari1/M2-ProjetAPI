@@ -1,6 +1,7 @@
 # modeles.py
 from datetime import datetime
 
+
 class Utilisateur:
     def __init__(self, pseudo, email, mdp_hash, created_at=None, updated_at=None, bookmaker=False):
         self.pseudo = pseudo

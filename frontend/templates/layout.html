@@ -14,7 +14,7 @@
             <li><a href="/" class="hover:underline">Accueil</a></li>
             {% if session.get('user_id') %}
                 {% if session.get('is_bookmaker') %}
-                    <li><a href="" class="hover:underline">Espace Bookmaker</a></li>
+                    <li><a href="{{ url_for('utilisateur.espace_bookmaker') }}" class="hover:underline">Espace Bookmaker</a></li>
                 {% endif %}
                 <li><a href="{{ url_for('utilisateur.logout') }}" class="hover:underline">Déconnexion</a></li>
             {% else %}

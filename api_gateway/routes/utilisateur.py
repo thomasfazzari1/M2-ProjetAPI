@@ -31,3 +31,8 @@ def login():
 def logout():
     session.clear()
     return jsonify({"success": True, "message": "Déconnexion réussie"}), 200
+
+
+@utilisateur_bp.route('/espace_bookmaker', methods=['GET'])
+def espace_bookmaker():
+    return jsonify({"success": True}), 200

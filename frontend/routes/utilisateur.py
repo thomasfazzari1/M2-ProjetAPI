@@ -63,6 +63,11 @@ def logout():
     return redirect(url_for('utilisateur.index'))
 
 
+@utilisateur_bp.route('/espace_bookmaker')
+def espace_bookmaker():
+    return render_template('utilisateur/bookmaker/espace_bookmaker.html')
+
+
 @utilisateur_bp.route('/')
 def index():
     return render_template('index.html')
