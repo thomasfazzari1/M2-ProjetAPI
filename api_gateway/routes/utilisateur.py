@@ -3,7 +3,10 @@ import requests
 from flask import Blueprint, request, jsonify, session
 
 utilisateur_bp = Blueprint('utilisateur', __name__)
-UTILISATEUR_SERVICE_URL = os.getenv('UTILISATEUR_SERVICE_URL', 'http://utilisateur:5000')
+UTILISATEUR_SERVICE_URL = os.getenv('UTILISATEUR_SERVICE_URL')
+
+match_bp = Blueprint('match', __name__)
+MATCH_SERVICE_URL = os.getenv('MATCH_SERVICE_URL')
 
 
 @utilisateur_bp.route('/create_user', methods=['POST'])

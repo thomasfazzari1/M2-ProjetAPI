@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block title %}Gérer les sports | The Real Deal{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-4 text-center">Gérer les sports</h1>
+
+<form action="{{ url_for('match.ajouter_sport') }}" method="post">
+    <div class="mb-4 flex items-center">
+        <input type="text" id="nom" name="nom" required class="flex-grow px-3 py-2 border rounded mr-2" placeholder="Nom du sport">
+        <button type="submit" class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">
+            Ajouter
+        </button>
+        <br>
+    </div>
+</form>
+
+<table class="w-full border-collapse bg-white shadow-md rounded-lg">
+    <tbody>
+    {% for sport in sports %}
+    <tr class="text-center">
+        <td class="py-3 px-4 border-b">{{ sport.nom }}</td>
+        <td class="py-3 px-4 border-b">
+            <form action="" method="post" style="display:inline;">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit" class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600">Supprimer
+                </button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -8,7 +8,7 @@
         <p class="text-lg">Vous pouvez ajouter des matchs et gérer leurs côtes.</p>
 
         <div class="mt-6 flex space-x-4">
-            <a href="" class="bg-red-600 text-white py-2 px-4 rounded">
+            <a href="{{ url_for('match.ajouter_sport') }}" class="bg-red-600 text-white py-2 px-4 rounded">
                 Ajouter un sport
             </a>
             <a href="" class="bg-red-600 text-white py-2 px-4 rounded">
@@ -28,9 +28,9 @@
             <div class="mb-6">
                 <label for="sport-filter" class="text-lg font-semibold mr-2">Filtrer par sport :</label>
                 <select id="sport-filter" name="sport-filter" class="border border-gray-300 rounded px-3 py-2">
-                    <option value="football" selected>Football</option>
-                    <option value="basketball">Basketball</option>
-                    <option value="tennis">Tennis</option>
+                    {% for sport in sports %}
+                        <option value="{{ sport['id'] }}">{{ sport['nom'] }}</option>
+                    {% endfor %}
                 </select>
             </div>
 

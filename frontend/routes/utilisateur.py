@@ -65,7 +65,14 @@ def logout():
 
 @utilisateur_bp.route('/espace_bookmaker')
 def espace_bookmaker():
-    return render_template('utilisateur/bookmaker/espace_bookmaker.html')
+    response = requests.get(f"{API_GATEWAY_URL}/get_all_sports")
+    if response.status_code == 200:
+        sports = response.json()
+    else:
+        flash("Erreur lors du chargement des sports.", "danger")
+        sports = []
+
+    return render_template('utilisateur/bookmaker/espace_bookmaker.html', sports=sports)
 
 
 @utilisateur_bp.route('/')
