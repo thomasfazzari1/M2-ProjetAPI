@@ -72,3 +72,15 @@ def create_evenement():
 def get_all_evenements():
     evenements = EvenementRepository.get_all_evenements()
     return jsonify(evenements), 200
+
+
+@match_bp.route('/delete_evenement', methods=['POST'])
+def delete_evenement():
+    data = request.get_json()
+    evenement_id = data.get("evenement_id")
+
+    supprimes = EvenementRepository.delete(evenement_id)
+    if supprimes == 0:
+        return jsonify({"success": False, "message": "Evenement non trouvé."}), 404
+
+    return jsonify({"success": True, "message": "Evenement supprimé avec succès."}), 200

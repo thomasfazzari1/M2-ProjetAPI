@@ -5,7 +5,7 @@
 {% block content %}
 <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
     <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Gérer les événements</h1>
-    
+
     <form action="{{ url_for('match.ajouter_evenement') }}" method="post" class="mb-8">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <select id="id_sport_associe" name="id_sport_associe" required
@@ -53,7 +53,8 @@
             <td class="py-3 px-4">{{ evenement.nom }}</td>
             <td class="py-3 px-4">{{ evenement.sport_nom }}</td>
             <td class="py-3 px-4">
-                <form action="" method="post" style="display:inline;">
+                <form action="{{ url_for('match.supprimer_evenement', evenement_id=evenement['id']) }}" method="post"
+                      style="display:inline;">
                     <button type="submit"
                             class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-600">
                         Supprimer

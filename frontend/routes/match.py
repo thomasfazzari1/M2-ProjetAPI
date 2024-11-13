@@ -70,3 +70,17 @@ def ajouter_evenement():
         evenement['sport_nom'] = sport_associe['nom'] if sport_associe else "Sport inconnu"
 
     return render_template('utilisateur/bookmaker/ajouter_evenement.html', sports=sports, evenements=evenements)
+
+
+@match_bp.route('/supprimer_evenement/<int:evenement_id>', methods=['POST'])
+def supprimer_evenement(evenement_id):
+    response = requests.post(f"{API_GATEWAY_URL}/delete_evenement", json={
+        "evenement_id": evenement_id
+    })
+
+    if response.status_code == 200:
+        flash("Evenement supprimé avec succès.", "success")
+    elif response.status_code == 404:
+        flash("Evenement non trouvé.", "warning")
+
+    return redirect(url_for('match.ajouter_evenement'))

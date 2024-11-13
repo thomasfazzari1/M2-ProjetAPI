@@ -20,28 +20,11 @@ class SportRepository:
 
     @staticmethod
     def get_all_sports():
-        connection = get_db_connection()
-        cursor = connection.cursor(
-            dictionary=True)
-        try:
-            cursor.execute("SELECT * FROM sport")
-            sports = cursor.fetchall()
-            return sports
-        finally:
-            cursor.close()
-            connection.close()
+        return get_all("sport")
 
     @staticmethod
     def delete(id):
-        connection = get_db_connection()
-        cursor = connection.cursor()
-        try:
-            cursor.execute("DELETE FROM sport WHERE id = %s", (id,))
-            connection.commit()
-            return cursor.rowcount
-        finally:
-            cursor.close()
-            connection.close()
+        return delete_by_id("sport", id)
 
 
 class EvenementRepository:
@@ -63,25 +46,31 @@ class EvenementRepository:
 
     @staticmethod
     def get_all_evenements():
-        connection = get_db_connection()
-        cursor = connection.cursor(
-            dictionary=True)
-        try:
-            cursor.execute("SELECT * FROM evenement")
-            evenements = cursor.fetchall()
-            return evenements
-        finally:
-            cursor.close()
-            connection.close()
+        return get_all("evenement")
 
-
-class EquipeRepository:
     @staticmethod
-    def create(equipe):
-        return
+    def delete(id):
+        return delete_by_id("evenement", id)
 
 
-class MatchRepository:
-    @staticmethod
-    def create(match):
-        return
+def get_all(table_name):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    try:
+        cursor.execute(f"SELECT * FROM {table_name}")
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        connection.close()
+
+
+def delete_by_id(table_name, id):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    try:
+        cursor.execute(f"DELETE FROM {table_name} WHERE id = %s", (id,))
+        connection.commit()
+        return cursor.rowcount
+    finally:
+        cursor.close()
+        connection.close()
