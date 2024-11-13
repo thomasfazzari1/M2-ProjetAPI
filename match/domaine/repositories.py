@@ -53,6 +53,32 @@ class EvenementRepository:
         return delete_by_id("evenement", id)
 
 
+class EquipeRepository:
+    @staticmethod
+    def create(equipe):
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        try:
+            cursor.execute(
+                "INSERT INTO equipe  (nom, id_sport_associe) VALUES (%s, %s)",
+                (equipe.nom, equipe.id_sport_associe,)
+            )
+            connection.commit()
+            equipe_id = cursor.lastrowid
+            return equipe_id
+        finally:
+            cursor.close()
+            connection.close()
+
+    @staticmethod
+    def get_all_equipes():
+        return get_all("equipe")
+
+    @staticmethod
+    def delete(id):
+        return delete_by_id("equipe", id)
+
+
 def get_all(table_name):
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)

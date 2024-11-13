@@ -40,3 +40,21 @@ def get_all_evenements():
 def delete_evenement():
     response = requests.post(f"{MATCH_SERVICE_URL}/delete_evenement", json=request.get_json())
     return jsonify(response.json()), response.status_code
+
+
+@match_bp.route('/create_equipe', methods=['POST'])
+def create_equipe():
+    response = requests.post(f"{MATCH_SERVICE_URL}/create_equipe", json=request.get_json())
+    return jsonify(response.json()), response.status_code
+
+
+@match_bp.route('/get_all_equipes', methods=['GET'])
+def get_all_equipes():
+    response = requests.get(f"{MATCH_SERVICE_URL}/get_all_equipes")
+    return jsonify(response.json()), response.status_code
+
+
+@match_bp.route('/delete_equipe', methods=['POST'])
+def delete_equipe():
+    response = requests.post(f"{MATCH_SERVICE_URL}/delete_equipe", json=request.get_json())
+    return jsonify(response.json()), response.status_code

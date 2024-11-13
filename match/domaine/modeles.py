@@ -13,9 +13,9 @@ class Evenement:
 
 
 class Equipe:
-    def __init__(self, id_sport, nom):
-        self.id_sport = id_sport
+    def __init__(self, nom, id_sport_associe):
         self.nom = nom
+        self.id_sport_associe = id_sport_associe
 
 
 class Match:

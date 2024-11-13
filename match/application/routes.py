@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-from domaine.repositories import SportRepository, EvenementRepository
-from domaine.modeles import Sport, Evenement
+from domaine.repositories import SportRepository, EvenementRepository, EquipeRepository
+from domaine.modeles import Sport, Evenement, Equipe
 
 match_bp = Blueprint('match', __name__)
 
@@ -84,3 +84,44 @@ def delete_evenement():
         return jsonify({"success": False, "message": "Evenement non trouvé."}), 404
 
     return jsonify({"success": True, "message": "Evenement supprimé avec succès."}), 200
+
+
+@match_bp.route('/create_equipe', methods=['POST'])
+def create_equipe():
+    data = request.get_json()
+    nom = data.get("nom")
+    id_sport_associe = data.get("id_sport_associe")
+
+    if not nom or not id_sport_associe:
+        return jsonify({"error": "Certains champs sont nuls."}), 400
+
+    try:
+        equipe = Equipe(nom=nom, id_sport_associe=id_sport_associe)
+        equipe_id = EquipeRepository.create(equipe)
+
+        if equipe_id is None:
+            return jsonify({"success": False, "message": "Erreur lors de la création de l'équipe."}), 500
+
+        return jsonify({"success": True, "message": "Equipe créée avec succès.", "equipe_id": equipe_id}), 201
+
+    except Exception as e:
+        print(f"Erreur lors de la création de l'équipe : {e}")
+        return jsonify({"error": "Erreur interne du serveur."}), 500
+
+
+@match_bp.route('/get_all_equipes', methods=['GET'])
+def get_all_equipes():
+    equipes = EquipeRepository.get_all_equipes()
+    return jsonify(equipes), 200
+
+
+@match_bp.route('/delete_equipe', methods=['POST'])
+def delete_equipe():
+    data = request.get_json()
+    equipe_id = data.get("equipe_id")
+
+    supprimes = EquipeRepository.delete(equipe_id)
+    if supprimes == 0:
+        return jsonify({"success": False, "message": "Equipe non trouvée."}), 404
+
+    return jsonify({"success": True, "message": "Equipe supprimée avec succès."}), 200
