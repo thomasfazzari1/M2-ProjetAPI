@@ -5,7 +5,6 @@ from flask import Blueprint, request, jsonify, session
 authentification_bp = Blueprint('authentification', __name__)
 AUTHENTIFICATION_SERVICE_URL = os.getenv('AUTHENTIFICATION_SERVICE_URL')
 
-match_bp = Blueprint('match', __name__)
 MATCH_SERVICE_URL = os.getenv('MATCH_SERVICE_URL')
 
 
@@ -21,10 +20,30 @@ def login():
 
     if response.status_code == 200:
         user_data = response.json()
+
+        user_data['is_bookmaker'] = user_data.get('bookmaker', False)
+
+        if user_data.get('is_bookmaker', False):
+            user_id = user_data['id']
+
+            match_response = requests.get(f"{MATCH_SERVICE_URL}/bookmaker/{user_id}")
+
+            if match_response.status_code == 404:  # Le bookmaker n'existe pas, donc on le crée
+                create_response = requests.post(
+                    f"{MATCH_SERVICE_URL}/create_bookmaker",
+                    json={
+                        "pseudo": user_data['pseudo'],
+                        "id_utilisateur": user_data['id']
+                    }
+                )
+
+                if create_response.status_code != 201:
+                    return jsonify({"error": "Échec de la création du bookmaker"}), 500
+
         return jsonify({
             "user_id": user_data['id'],
             "pseudo": user_data['pseudo'],
-            "is_bookmaker": user_data.get('bookmaker', False)
+            "is_bookmaker": user_data['is_bookmaker']
         }), 200
     else:
         return jsonify({"error": "Connexion échouée"}), 401

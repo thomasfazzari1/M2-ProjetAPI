@@ -1,5 +1,5 @@
-# repositories.py
 from bdd.connexion import get_db_connection
+from psycopg2.extras import DictCursor
 
 
 class UtilisateurRepository:
@@ -9,12 +9,15 @@ class UtilisateurRepository:
         cursor = connection.cursor()
         try:
             cursor.execute(
-                "INSERT INTO utilisateur (pseudo, email, mdp_hash, created_at, updated_at, bookmaker) VALUES (%s, %s, %s, %s, %s, %s)",
+                """
+                INSERT INTO public.utilisateur (pseudo, email, mdp_hash, created_at, updated_at, bookmaker) 
+                VALUES (%s, %s, %s, %s, %s, %s) RETURNING id
+                """,
                 (utilisateur.pseudo, utilisateur.email, utilisateur.mdp_hash, utilisateur.created_at,
                  utilisateur.updated_at, utilisateur.bookmaker)
             )
+            utilisateur_id = cursor.fetchone()[0]
             connection.commit()
-            utilisateur_id = cursor.lastrowid
             return utilisateur_id
         finally:
             cursor.close()
@@ -23,11 +26,11 @@ class UtilisateurRepository:
     @staticmethod
     def find_by_email(email):
         connection = get_db_connection()
-        cursor = connection.cursor(dictionary=True)
+        cursor = connection.cursor(cursor_factory=DictCursor)
         try:
-            cursor.execute("SELECT * FROM utilisateur WHERE email = %s", (email,))
+            cursor.execute("SELECT * FROM public.utilisateur WHERE email = %s", (email,))
             user = cursor.fetchone()
-            return user if user else None
+            return dict(user) if user else None
         finally:
             cursor.close()
             connection.close()

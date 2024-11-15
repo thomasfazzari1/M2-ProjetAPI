@@ -2,7 +2,7 @@ import os
 
 
 class Config:
-    DB_HOST = os.getenv("DB_HOST")
-    DB_USER = os.getenv("DB_USER")
-    DB_PASSWORD = os.getenv("DB_PASSWORD")
-    DB_NAME = os.getenv("DB_NAME")
+    AUTH_DB_HOST = os.getenv("AUTH_DB_HOST")
+    AUTH_DB_USER = os.getenv("AUTH_DB_USER")
+    AUTH_DB_PASSWORD = os.getenv("AUTH_DB_PASSWORD")
+    AUTH_DB_NAME = os.getenv("AUTH_DB_NAME")

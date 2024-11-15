@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
-from domaine.repositories import SportRepository, EvenementRepository, EquipeRepository, MatchRepository
-from domaine.modeles import Sport, Evenement, Equipe, Match
+from domaine.repositories import SportRepository, EvenementRepository, EquipeRepository, MatchRepository, \
+    BookmakerRepository
+from domaine.modeles import Sport, Evenement, Equipe, Match, Bookmaker
 
 match_bp = Blueprint('match', __name__)
 
@@ -102,6 +103,10 @@ def create_equipe():
     if not nom or not id_sport_associe:
         return jsonify({"error": "Certains champs sont nuls."}), 400
 
+    existe = EquipeRepository.get_by_name(nom)
+    if existe:
+        return jsonify({"error": "Une équipe avec ce nom existe déjà."}), 400
+
     try:
         equipe = Equipe(nom=nom, id_sport_associe=id_sport_associe)
         equipe_id = EquipeRepository.create(equipe)
@@ -110,10 +115,8 @@ def create_equipe():
             return jsonify({"success": False, "message": "Erreur lors de la création de l'équipe."}), 500
 
         return jsonify({"success": True, "message": "Equipe créée avec succès.", "equipe_id": equipe_id}), 201
-
     except Exception as e:
-        print(f"Erreur lors de la création de l'équipe : {e}")
-        return jsonify({"error": "Erreur interne du serveur."}), 500
+        return jsonify({"error": f"Erreur interne du serveur : {str(e)}"}), 500
 
 
 @match_bp.route('/get_all_equipes', methods=['GET'])
@@ -151,6 +154,18 @@ def create_match():
             return jsonify({"error": f"Le champ {champ} est requis."}), 400
 
     try:
+        bookmaker = BookmakerRepository.get_by_user_id(data["id_bookmaker"])
+
+        if not bookmaker:
+            bookmaker_data = {
+                "pseudo": f"Bookmaker_{data['id_bookmaker']}",
+                "id_utilisateur": data["id_bookmaker"]
+            }
+            create_bookmaker_response = requests.post(f"{MATCH_SERVICE_URL}/create_bookmaker", json=bookmaker_data)
+
+            if create_bookmaker_response.status_code != 201:
+                return jsonify({"error": "Le bookmaker n'a pas pu être créé."}), 500
+
         match = Match(
             id_sport_associe=data["id_sport"],
             id_evenement_associe=data["id_evenement"],
@@ -162,7 +177,8 @@ def create_match():
             id_eq_exterieure=data["id_eq_exterieure"],
             valeur_cote_eq_exterieure=data["valeur_cote_eq_exterieure"],
             valeur_cote_match_nul=data["valeur_cote_match_nul"],
-            id_bookmaker=data["id_bookmaker"],
+            created_by=bookmaker['id'],
+            updated_by=bookmaker['id'],
             est_mis_en_avant=data.get("est_mis_en_avant", False)
         )
 
@@ -182,4 +198,38 @@ def create_match():
 def get_all_matchs():
     matchs = MatchRepository.get_all_matchs()
     return jsonify(matchs), 200
+# endregion
+
+# region Bookmaker
+@match_bp.route('/bookmaker/<int:user_id>', methods=['GET'])
+def get_bookmaker(user_id):
+    bookmaker = BookmakerRepository.get_by_user_id(user_id)
+    if not bookmaker:
+        return jsonify({"error": "Bookmaker introuvable"}), 404
+    return jsonify({
+        "id": bookmaker['id'],
+        "pseudo": bookmaker['pseudo'],
+        "created_at": bookmaker['created_at'],
+        "updated_at": bookmaker['updated_at']
+    }), 200
+
+
+@match_bp.route('/create_bookmaker', methods=['POST'])
+def create_bookmaker():
+    data = request.get_json()
+
+    pseudo = data.get("pseudo")
+    id_utilisateur = data.get("id_utilisateur")
+
+    if not pseudo or not id_utilisateur:
+        return jsonify({"error": "Données incomplètes"}), 400
+
+    try:
+        bookmaker = Bookmaker(pseudo=pseudo, id_utilisateur=id_utilisateur)
+        bookmaker_id = BookmakerRepository.create(bookmaker)
+
+        return jsonify({"success": True, "bookmaker_id": bookmaker_id}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 # endregion

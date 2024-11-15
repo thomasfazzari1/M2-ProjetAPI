@@ -1,13 +1,11 @@
-import mysql.connector
-
+import psycopg2
 from config import Config
 
 
 def get_db_connection():
-    return mysql.connector.connect(
-        host=Config.DB_HOST,
-        user=Config.DB_USER,
-        password=Config.DB_PASSWORD,
-        database=Config.DB_NAME,
-        ssl_disabled=True
+    return psycopg2.connect(
+        host=Config.MATCH_DB_HOST,
+        user=Config.MATCH_DB_USER,
+        password=Config.MATCH_DB_PASSWORD,
+        dbname=Config.MATCH_DB_NAME
     )
