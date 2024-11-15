@@ -58,3 +58,21 @@ def get_all_equipes():
 def delete_equipe():
     response = requests.post(f"{MATCH_SERVICE_URL}/delete_equipe", json=request.get_json())
     return jsonify(response.json()), response.status_code
+
+
+@match_bp.route('/create_match', methods=['POST'])
+def create_match():
+    response = requests.post(f"{MATCH_SERVICE_URL}/create_match", json=request.get_json())
+    return jsonify(response.json()), response.status_code
+
+
+@match_bp.route('/get_all_matchs', methods=['GET'])
+def get_all_matchs():
+    response = requests.get(f"{MATCH_SERVICE_URL}/get_all_matchs")
+    return jsonify(response.json()), response.status_code
+
+
+@match_bp.route('/delete_match', methods=['POST'])
+def delete_match():
+    response = requests.post(f"{MATCH_SERVICE_URL}/delete_match", json=request.get_json())
+    return jsonify(response.json()), response.status_code

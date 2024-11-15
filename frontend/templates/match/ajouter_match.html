@@ -1,0 +1,121 @@
+{% extends "layout.html" %}
+
+{% block title %}Gérer les matchs | The Real Deal{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+    <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Gérer les matchs</h1>
+
+    <form action="{{ url_for('match.ajouter_match') }}" method="post" class="mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <select id="id_sport" name="id_sport" required
+                    class="col-span-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-600">
+                <option value="" disabled selected>Choisir un sport</option>
+                {% for sport in sports %}
+                <option value="{{ sport['id'] }}">{{ sport['nom'] }}</option>
+                {% endfor %}
+            </select>
+
+            <select id="id_evenement" name="id_evenement" required
+                    class="col-span-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-600">
+                <option value="" disabled selected>Choisir un événement</option>
+                {% for evenement in evenements %}
+                <option value="{{ evenement['id'] }}">{{ evenement['nom'] }}</option>
+                {% endfor %}
+            </select>
+
+            <input type="date" id="date" name="date" required
+                   class="col-span-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-600">
+
+            <input type="time" id="heure_debut" name="heure_debut" required
+                   class="col-span-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-600"
+                   placeholder="Heure de début">
+
+            <input type="time" id="heure_fin" name="heure_fin" required
+                   class="col-span-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-600"
+                   placeholder="Heure de fin">
+
+            <select id="id_eq_domicile" name="id_eq_domicile" required
+                    class="col-span-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-600">
+                <option value="" disabled selected>Choisir équipe à domicile</option>
+                {% for equipe in equipes %}
+                <option value="{{ equipe['id'] }}">{{ equipe['nom'] }}</option>
+                {% endfor %}
+            </select>
+
+            <input type="number" step="0.01" id="valeur_cote_eq_domicile" name="valeur_cote_eq_domicile" required
+                   class="col-span-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-600"
+                   placeholder="Cote équipe domicile">
+
+            <select id="id_eq_exterieure" name="id_eq_exterieure" required
+                    class="col-span-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-600">
+                <option value="" disabled selected>Choisir équipe extérieure</option>
+                {% for equipe in equipes %}
+                <option value="{{ equipe['id'] }}">{{ equipe['nom'] }}</option>
+                {% endfor %}
+            </select>
+
+            <input type="number" step="0.01" id="valeur_cote_eq_exterieure" name="valeur_cote_eq_exterieure" required
+                   class="col-span-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-600"
+                   placeholder="Cote équipe extérieure">
+
+            <input type="number" step="0.01" id="valeur_cote_match_nul" name="valeur_cote_match_nul" required
+                   class="col-span-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-600"
+                   placeholder="Cote match nul">
+
+            <label for="est_mis_en_avant" class="flex items-center col-span-1 md:col-span-3">
+                <input type="checkbox" id="est_mis_en_avant" name="est_mis_en_avant"
+                       class="mr-2 focus:ring-2 focus:ring-red-600">
+                <span>Mettre ce match en avant</span>
+            </label>
+
+            <button type="submit"
+                    class="col-span-1 md:col-span-3 bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-600">
+                Ajouter
+            </button>
+        </div>
+    </form>
+
+    <div class="mb-8">
+        <label for="sport_filtre" class="block text-sm font-medium text-gray-700 mb-2">Filtrer par sport :</label>
+        <select id="sport_filtre"
+                class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-600">
+            <option value="all">Tous les sports</option>
+            {% for sport in sports %}
+            <option value="{{ sport['id'] }}">{{ sport['nom'] }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <table class="w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden">
+        <thead>
+        <tr class="bg-gray-200 text-gray-700">
+            <th class="py-3 px-2 border-b text-left">Événement</th>
+            <th class="py-3 px-2 border-b text-left">Équipe Domicile</th>
+            <th class="py-3 px-2 border-b text-left">Côte Domicile</th>
+            <th class="py-3 px-2 border-b text-left">Côte Match Nul</th>
+            <th class="py-3 px-2 border-b text-left">Équipe Extérieure</th>
+            <th class="py-3 px-2 border-b text-left">Côte Extérieure</th>
+            <th class="py-3 px-2 border-b text-left">Mis en avant</th>
+            <th class="py-3 px-2 border-b text-left">Nombre de paris associés</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for match in matchs %}
+        <tr data-sport-id="{{ match['id_sport_associe'] }}">
+            <td class="py-3 px-2">{{ match['evenement_nom'] }}</td>
+            <td class="py-3 px-2">{{ match['equipe_domicile'] }}</td>
+            <td class="py-3 px-2">{{ match['valeur_cote_eq_domicile'] }}</td>
+            <td class="py-3 px-2">{{ match['valeur_cote_match_nul'] }}</td>
+            <td class="py-3 px-2">{{ match['equipe_exterieure'] }}</td>
+            <td class="py-3 px-2">{{ match['valeur_cote_eq_exterieure'] }}</td>
+            <td class="py-3 px-2">{{ match['est_mis_en_avant'] }}</td>
+            <td class="py-3 px-2">{{ match['nombre_paris'] }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script src="{{ url_for('static', filename='js/match/ajouter_match.js') }}"></script>
+{% endblock %}

@@ -1,7 +1,7 @@
 services:
-  utilisateur:
+  authentification:
     build:
-      context: ./utilisateur
+      context: authentification
     env_file:
       - .env
     ports:
@@ -33,10 +33,10 @@ services:
     ports:
       - "5000:5000"
     depends_on:
-      - utilisateur
+      - authentification
       - match
     environment:
-      - UTILISATEUR_SERVICE_URL=${UTILISATEUR_SERVICE_URL}
+      - AUTHENTIFICATION_SERVICE_URL=${AUTHENTIFICATION_SERVICE_URL}
       - MATCH_SERVICE_URL=${MATCH_SERVICE_URL}
 
   frontend:

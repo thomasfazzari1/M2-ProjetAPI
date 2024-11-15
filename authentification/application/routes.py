@@ -3,10 +3,10 @@ from domaine.repositories import UtilisateurRepository
 from domaine.modeles import Utilisateur
 import bcrypt
 
-utilisateur_bp = Blueprint('utilisateur', __name__)
+authentification_bp = Blueprint('authentification', __name__)
 
 
-@utilisateur_bp.route('/create_user', methods=['POST'])
+@authentification_bp.route('/create_user', methods=['POST'])
 def create_user():
     data = request.get_json()
     pseudo = data.get("pseudo")
@@ -24,7 +24,7 @@ def create_user():
     return jsonify({"success": True, "message": "Utilisateur créé avec succès.", "user_id": utilisateur_id}), 201
 
 
-@utilisateur_bp.route('/login', methods=['POST'])
+@authentification_bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
     email = data.get("email")
@@ -44,6 +44,6 @@ def login():
     return jsonify({"error": "Email ou mot de passe incorrect."}), 401
 
 
-@utilisateur_bp.route('/espace_bookmaker', methods=['GET'])
+@authentification_bp.route('/espace_bookmaker', methods=['GET'])
 def espace_bookmaker():
     return jsonify({}), 200

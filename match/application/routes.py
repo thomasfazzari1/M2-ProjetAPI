@@ -1,10 +1,11 @@
 from flask import Blueprint, request, jsonify
-from domaine.repositories import SportRepository, EvenementRepository, EquipeRepository
-from domaine.modeles import Sport, Evenement, Equipe
+from domaine.repositories import SportRepository, EvenementRepository, EquipeRepository, MatchRepository
+from domaine.modeles import Sport, Evenement, Equipe, Match
 
 match_bp = Blueprint('match', __name__)
 
 
+# region Sport
 @match_bp.route('/create_sport', methods=['POST'])
 def create_sport():
     data = request.get_json()
@@ -45,6 +46,9 @@ def delete_sport():
     return jsonify({"success": True, "message": "Sport supprimé avec succès."}), 200
 
 
+# endregion
+
+# region Evenement
 @match_bp.route('/create_evenement', methods=['POST'])
 def create_evenement():
     data = request.get_json()
@@ -86,6 +90,9 @@ def delete_evenement():
     return jsonify({"success": True, "message": "Evenement supprimé avec succès."}), 200
 
 
+# endregion
+
+# region Equipe
 @match_bp.route('/create_equipe', methods=['POST'])
 def create_equipe():
     data = request.get_json()
@@ -125,3 +132,54 @@ def delete_equipe():
         return jsonify({"success": False, "message": "Equipe non trouvée."}), 404
 
     return jsonify({"success": True, "message": "Equipe supprimée avec succès."}), 200
+
+
+# endregion
+
+# region Match
+@match_bp.route('/create_match', methods=['POST'])
+def create_match():
+    data = request.get_json()
+    champs = [
+        "id_sport", "id_evenement", "date", "heure_debut", "heure_fin",
+        "id_eq_domicile", "valeur_cote_eq_domicile", "id_eq_exterieure",
+        "valeur_cote_eq_exterieure", "valeur_cote_match_nul", "id_bookmaker"
+    ]
+
+    for champ in champs:
+        if champ not in data:
+            return jsonify({"error": f"Le champ {champ} est requis."}), 400
+
+    try:
+        match = Match(
+            id_sport_associe=data["id_sport"],
+            id_evenement_associe=data["id_evenement"],
+            date=data["date"],
+            heure_debut=data["heure_debut"],
+            heure_fin=data["heure_fin"],
+            id_eq_domicile=data["id_eq_domicile"],
+            valeur_cote_eq_domicile=data["valeur_cote_eq_domicile"],
+            id_eq_exterieure=data["id_eq_exterieure"],
+            valeur_cote_eq_exterieure=data["valeur_cote_eq_exterieure"],
+            valeur_cote_match_nul=data["valeur_cote_match_nul"],
+            id_bookmaker=data["id_bookmaker"],
+            est_mis_en_avant=data.get("est_mis_en_avant", False)
+        )
+
+        match_id = MatchRepository.create(match)
+
+        if match_id is None:
+            return jsonify({"success": False, "message": "Erreur lors de la création du match."}), 500
+
+        return jsonify({"success": True, "message": "Match créé avec succès.", "match_id": match_id}), 201
+
+    except Exception as e:
+        print(f"Erreur lors de la création du match : {e}")
+        return jsonify({"error": "Erreur interne du serveur."}), 500
+
+
+@match_bp.route('/get_all_matchs', methods=['GET'])
+def get_all_matchs():
+    matchs = MatchRepository.get_all_matchs()
+    return jsonify(matchs), 200
+# endregion

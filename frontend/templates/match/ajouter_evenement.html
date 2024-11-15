@@ -1,12 +1,12 @@
 {% extends "layout.html" %}
 
-{% block title %}Gérer les équipes | The Real Deal{% endblock %}
+{% block title %}Gérer les événements | The Real Deal{% endblock %}
 
 {% block content %}
 <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-    <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Gérer les équipes</h1>
+    <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Gérer les événements</h1>
 
-    <form action="{{ url_for('match.ajouter_equipe') }}" method="post" class="mb-8">
+    <form action="{{ url_for('match.ajouter_evenement') }}" method="post" class="mb-8">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <select id="id_sport_associe" name="id_sport_associe" required
                     class="col-span-1 md:col-span-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-600">
@@ -18,7 +18,7 @@
 
             <input type="text" id="nom" name="nom" required
                    class="col-span-1 md:col-span-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-600"
-                   placeholder="Nom de l'équipe">
+                   placeholder="Nom de l'événement">
 
             <button type="submit"
                     class="col-span-1 bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-600">
@@ -31,7 +31,7 @@
         <label for="sport_filtre" class="block text-sm font-medium text-gray-700 mb-2">Filtrer par sport :</label>
         <select id="sport_filtre"
                 class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-600"
-                onchange="filtrerEquipes()">
+                onchange="filtrerEvenements()">
             <option value="all">Tous les sports</option>
             {% for sport in sports %}
             <option value="{{ sport['id'] }}">{{ sport['nom'] }}</option>
@@ -42,18 +42,18 @@
     <table class="w-full border-collapse bg-white shadow-md rounded-lg overflow-hidden">
         <thead>
         <tr class="bg-gray-200 text-gray-700">
-            <th class="py-3 px-4 border-b text-left">Nom de l'équipe</th>
+            <th class="py-3 px-4 border-b text-left">Nom de l'événement</th>
             <th class="py-3 px-4 border-b text-left">Sport associé</th>
             <th class="py-3 px-4 border-b text-left">Actions</th>
         </tr>
         </thead>
-        <tbody id="team_table_body" class="divide-y divide-gray-200">
-        {% for equipe in equipes %}
-        <tr class="team-row" data-sport-id="{{ equipe.id_sport_associe }}">
-            <td class="py-3 px-4">{{ equipe.nom }}</td>
-            <td class="py-3 px-4">{{ equipe.sport_nom }}</td>
+        <tbody id="event_table_body" class="divide-y divide-gray-200">
+        {% for evenement in evenements %}
+        <tr class="event-row" data-sport-id="{{ evenement.id_sport_associe }}">
+            <td class="py-3 px-4">{{ evenement.nom }}</td>
+            <td class="py-3 px-4">{{ evenement.sport_nom }}</td>
             <td class="py-3 px-4">
-                <form action="{{ url_for('match.supprimer_equipe', equipe_id=equipe['id']) }}" method="post"
+                <form action="{{ url_for('match.supprimer_evenement', evenement_id=evenement['id']) }}" method="post"
                       style="display:inline;">
                     <button type="submit"
                             class="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-600">
@@ -67,5 +67,5 @@
     </table>
 </div>
 
-<script src="{{ url_for('static', filename='js/utilisateur/bookmaker/ajouter_equipe.js') }}"></script>
+<script src="{{ url_for('static', filename='js/match/ajouter_evenement.js') }}"></script>
 {% endblock %}

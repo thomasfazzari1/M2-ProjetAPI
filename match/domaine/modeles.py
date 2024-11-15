@@ -19,12 +19,12 @@ class Equipe:
 
 
 class Match:
-    def __init__(self, id_sport, id_evenement, date, heure_debut, heure_fin,
+    def __init__(self, id_sport_associe, id_evenement_associe, date, heure_debut, heure_fin,
                  id_eq_domicile, valeur_cote_eq_domicile, id_eq_exterieure,
                  valeur_cote_eq_exterieure, valeur_cote_match_nul, created_at=None, updated_at=None, id_bookmaker=None,
                  est_mis_en_avant=False):
-        self.id_sport = id_sport
-        self.id_evenement = id_evenement
+        self.id_sport_associe = id_sport_associe
+        self.id_evenement_associe = id_evenement_associe
         self.date = date
         self.heure_debut = heure_debut
         self.heure_fin = heure_fin
