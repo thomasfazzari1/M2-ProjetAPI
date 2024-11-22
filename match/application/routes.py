@@ -15,6 +15,9 @@ def create_sport():
     if not nom:
         return jsonify({"error": "Le nom ne peut pas être nul."}), 400
 
+    if SportRepository.get_by_name(nom):
+        return jsonify({"error": "Un sport avec ce nom existe déjà."}), 400
+
     try:
         sport = Sport(nom=nom)
         sport_id = SportRepository.create(sport)
@@ -25,7 +28,6 @@ def create_sport():
         return jsonify({"success": True, "message": "Sport créé avec succès.", "sport_id": sport_id}), 201
 
     except Exception as e:
-        print(f"Erreur lors de la création du sport : {e}")
         return jsonify({"error": "Erreur interne du serveur."}), 500
 
 
@@ -58,6 +60,10 @@ def create_evenement():
 
     if not nom or not id_sport_associe:
         return jsonify({"error": "Certains champs sont nuls."}), 400
+
+    sport = SportRepository.get_by_id(id_sport_associe)
+    if not sport:
+        return jsonify({"error": f"Aucun sport trouvé avec l'ID {id_sport_associe}."}), 404
 
     try:
         evenement = Evenement(nom=nom, id_sport_associe=id_sport_associe)
@@ -102,6 +108,10 @@ def create_equipe():
 
     if not nom or not id_sport_associe:
         return jsonify({"error": "Certains champs sont nuls."}), 400
+
+    sport = SportRepository.get_by_id(id_sport_associe)
+    if not sport:
+        return jsonify({"error": f"Aucun sport trouvé avec l'ID {id_sport_associe}."}), 404
 
     existe = EquipeRepository.get_by_name(nom)
     if existe:
@@ -154,10 +164,26 @@ def create_match():
             return jsonify({"error": f"Le champ {champ} est requis."}), 400
 
     try:
-        bookmaker = BookmakerRepository.get_by_user_id(data["id_bookmaker"])
+        sport = SportRepository.get_by_id(data["id_sport"])
+        if not sport:
+            return jsonify({"error": f"Aucun sport trouvé avec l'ID {data['id_sport']}."}), 404
 
+        evenement = EvenementRepository.get_by_id(data["id_evenement"])
+        if not evenement:
+            return jsonify({"error": f"Aucun événement trouvé avec l'ID {data['id_evenement']}."}), 404
+
+        equipe_domicile = EquipeRepository.get_by_id(data["id_eq_domicile"])
+        if not equipe_domicile:
+            return jsonify({"error": f"Aucune équipe trouvée avec l'ID domicile {data['id_eq_domicile']}."}), 404
+
+        equipe_exterieure = EquipeRepository.get_by_id(data["id_eq_exterieure"])
+        if not equipe_exterieure:
+            return jsonify({"error": f"Aucune équipe trouvée avec l'ID extérieure {data['id_eq_exterieure']}."}), 404
+
+        bookmaker = BookmakerRepository.get_by_user_id(data["id_bookmaker"])
         if not bookmaker:
-            return
+            return jsonify(
+                {"error": f"Aucun bookmaker trouvé pour l'utilisateur avec l'ID {data['id_bookmaker']}."}), 404
 
         match = Match(
             id_sport_associe=data["id_sport"],

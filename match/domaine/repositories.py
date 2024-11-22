@@ -28,6 +28,14 @@ class SportRepository:
     def delete(id):
         return delete_by_id("sport", id)
 
+    @staticmethod
+    def get_by_name(nom):
+        return get_by_field("sport", "nom", nom)
+
+    @staticmethod
+    def get_by_id(id):
+        return get_by_field("sport", "id", id)
+
 
 # endregion
 
@@ -52,6 +60,10 @@ class EvenementRepository:
     @staticmethod
     def get_all_evenements():
         return get_all("evenement")
+
+    @staticmethod
+    def get_by_id(id):
+        return get_by_field("evenement", "id", id)
 
     @staticmethod
     def delete(id):
@@ -83,19 +95,16 @@ class EquipeRepository:
         return get_all("equipe")
 
     @staticmethod
-    def delete(id):
-        return delete_by_id("equipe", id)
+    def get_by_name(nom):
+        return get_by_field("equipe", "nom", nom)
 
     @staticmethod
-    def get_by_name(nom):
-        connection = get_db_connection()
-        cursor = connection.cursor()
-        try:
-            cursor.execute("SELECT * FROM public.equipe WHERE nom = %s", (nom,))
-            return cursor.fetchone()
-        finally:
-            cursor.close()
-            connection.close()
+    def get_by_id(id):
+        return get_by_field("equipe", "id", id)
+
+    @staticmethod
+    def delete(id):
+        return delete_by_id("equipe", id)
 
 
 # endregion
@@ -155,7 +164,6 @@ class MatchRepository:
             for match in matchs:
                 match['est_mis_en_avant'] = "Oui" if match['est_mis_en_avant'] else "Non"
 
-            print(f"Matchs récupérés : {matchs}", flush=True)
             return matchs
         finally:
             cursor.close()
@@ -168,7 +176,7 @@ class MatchRepository:
 
 # endregion
 
-
+# region Bookmaker
 class BookmakerRepository:
     @staticmethod
     def create(bookmaker):
@@ -205,6 +213,12 @@ class BookmakerRepository:
             cursor.close()
             connection.close()
 
+    @staticmethod
+    def get_by_id(id):
+        return get_by_field("bookmaker", "id", id)
+
+
+# endregion
 
 def get_all(table_name):
     connection = get_db_connection()
@@ -229,6 +243,22 @@ def delete_by_id(table_name, id):
         cursor.execute(f"DELETE FROM public.{table_name} WHERE id = %s", (id,))
         connection.commit()
         return cursor.rowcount
+    finally:
+        cursor.close()
+        connection.close()
+
+
+def get_by_field(table_name, field_name, field_value):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    try:
+        query = f"SELECT * FROM public.{table_name} WHERE {field_name} = %s"
+        cursor.execute(query, (field_value,))
+        row = cursor.fetchone()
+        if row:
+            colnames = [desc[0] for desc in cursor.description]
+            return dict(zip(colnames, row))
+        return None
     finally:
         cursor.close()
         connection.close()
