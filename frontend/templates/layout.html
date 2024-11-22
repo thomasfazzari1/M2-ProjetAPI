@@ -13,15 +13,17 @@
         <ul class="flex space-x-6">
             <li><a href="/" class="hover:underline">Accueil</a></li>
             {% if session.get('user_id') %}
-                {% if session.get('is_bookmaker') %}
-                    <li><a href="{{ url_for('authentification.espace_bookmaker') }}" class="hover:underline">Espace Bookmaker</a></li>
-                {% else %}
-                    <li><a href="#" class="hover:underline">Ma cagnotte : {{ session.get('cagnotte', 0.00) }} €</a></li>
-                {% endif %}
-                <li><a href="{{ url_for('authentification.logout') }}" class="hover:underline">Déconnexion</a></li>
+            {% if session.get('is_bookmaker') %}
+            <li><a href="{{ url_for('authentification.espace_bookmaker') }}" class="hover:underline">Espace
+                Bookmaker</a></li>
             {% else %}
-                <li><a href="{{ url_for('authentification.register') }}" class="hover:underline">Inscription</a></li>
-                <li><a href="{{ url_for('authentification.login') }}" class="hover:underline">Connexion</a></li>
+            <li><a href="{{ url_for('pari.details_cagnotte') }}" class="hover:underline">Ma cagnotte : {{
+                session.get('cagnotte', 0.00) }} €</a></li>
+            {% endif %}
+            <li><a href="{{ url_for('authentification.logout') }}" class="hover:underline">Déconnexion</a></li>
+            {% else %}
+            <li><a href="{{ url_for('authentification.register') }}" class="hover:underline">Inscription</a></li>
+            <li><a href="{{ url_for('authentification.login') }}" class="hover:underline">Connexion</a></li>
             {% endif %}
         </ul>
     </div>

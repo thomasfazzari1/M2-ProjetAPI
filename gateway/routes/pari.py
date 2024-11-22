@@ -13,3 +13,9 @@ def get_cagnotte(id_utilisateur):
         return jsonify(response.json()), response.status_code
     except requests.exceptions.RequestException as e:
         return jsonify({"error": f"Erreur de communication avec le service pari : {str(e)}"}), 500
+
+
+@pari_bp.route('/details_cagnotte', methods=['GET', 'POST'])
+def details_cagnotte():
+    response = requests.post(f"{PARI_SERVICE_URL}/details_cagnotte", json=request.get_json())
+    return jsonify(response.json()), response.status_code

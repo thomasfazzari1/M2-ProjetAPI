@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block title %}Ma cagnotte | The Real Deal{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+    <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Valeur actuelle de votre cagnotte :</h1>
+    <p class="text-2xl text-center text-green-600 font-semibold mb-4">
+        {{ cagnotte }} €
+    </p>
+    <form action="#" method="POST" class="flex flex-col items-center">
+        <label for="montant" class="block text-gray-700 font-bold mb-2">Montant à ajouter :</label>
+        <input
+                type="number"
+                step="1"
+                name="montant"
+                id="montant"
+                placeholder="Ex: 50"
+                class="border rounded p-2 mb-4 w-1/2 text-center"
+                min="10"
+                max="5000"
+                required
+        >
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Recharger la cagnotte
+        </button>
+    </form>
+</div>
+
+<script src="{{ url_for('static', filename='js/pari/details_cagnotte.js') }}"></script>
+
+{% endblock %}
