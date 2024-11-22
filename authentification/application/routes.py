@@ -14,14 +14,24 @@ def create_user():
     mdp = data.get("mdp")
 
     if not pseudo or not email or not mdp:
-        return jsonify({"error": "Certains champs sont nuls."}), 400
+        return jsonify({"error": "Certains champs sont nuls ou manquants."}), 400
+
+    if UtilisateurRepository.find_by_email(email):
+        return jsonify({"error": "Un utilisateur avec cet email existe déjà."}), 400
+
+    if UtilisateurRepository.find_by_pseudo(pseudo):
+        return jsonify({"error": "Un utilisateur avec ce pseudo existe déjà."}), 400
 
     mdp_hash = bcrypt.hashpw(mdp.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
     utilisateur = Utilisateur(pseudo=pseudo, email=email, mdp_hash=mdp_hash)
-
     utilisateur_id = UtilisateurRepository.create(utilisateur)
-    return jsonify({"success": True, "message": "Utilisateur créé avec succès.", "user_id": utilisateur_id}), 201
+
+    return jsonify({
+        "success": True,
+        "message": "Utilisateur créé avec succès.",
+        "user_id": utilisateur_id
+    }), 201
 
 
 @authentification_bp.route('/login', methods=['POST'])
@@ -42,8 +52,3 @@ def login():
         }), 200
 
     return jsonify({"error": "Email ou mot de passe incorrect."}), 401
-
-
-@authentification_bp.route('/espace_bookmaker', methods=['GET'])
-def espace_bookmaker():
-    return jsonify({}), 200

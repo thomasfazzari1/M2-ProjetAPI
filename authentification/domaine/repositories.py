@@ -34,3 +34,15 @@ class UtilisateurRepository:
         finally:
             cursor.close()
             connection.close()
+
+    @staticmethod
+    def find_by_pseudo(pseudo):
+        connection = get_db_connection()
+        cursor = connection.cursor(cursor_factory=DictCursor)
+        try:
+            cursor.execute("SELECT * FROM public.utilisateur WHERE pseudo = %s", (pseudo,))
+            user = cursor.fetchone()
+            return dict(user) if user else None
+        finally:
+            cursor.close()
+            connection.close()
