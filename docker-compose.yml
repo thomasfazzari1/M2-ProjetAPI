@@ -25,9 +25,22 @@ services:
       - MATCH_DB_USER=${MATCH_DB_USER}
       - MATCH_DB_PASSWORD=${MATCH_DB_PASSWORD}
 
+  pari:
+    build:
+      context: ./pari
+    env_file:
+      - .env
+    ports:
+      - "5004:5000"
+    environment:
+      - PARI_DB_HOST=${PARI_DB_HOST}
+      - PARI_DB_NAME=${PARI_DB_NAME}
+      - PARI_DB_USER=${PARI_DB_USER}
+      - PARI_DB_PASSWORD=${PARI_DB_PASSWORD}
+
   api_gateway:
     build:
-      context: ./api_gateway
+      context: gateway
     env_file:
       - .env
     ports:
@@ -38,6 +51,7 @@ services:
     environment:
       - AUTHENTIFICATION_SERVICE_URL=${AUTHENTIFICATION_SERVICE_URL}
       - MATCH_SERVICE_URL=${MATCH_SERVICE_URL}
+      - PARI_SERVICE_URL=${PARI_SERVICE_URL}
 
   frontend:
     build:

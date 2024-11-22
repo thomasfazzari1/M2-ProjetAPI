@@ -15,6 +15,8 @@
             {% if session.get('user_id') %}
                 {% if session.get('is_bookmaker') %}
                     <li><a href="{{ url_for('authentification.espace_bookmaker') }}" class="hover:underline">Espace Bookmaker</a></li>
+                {% else %}
+                    <li><a href="#" class="hover:underline">Ma cagnotte : {{ session.get('cagnotte', 0.00) }} €</a></li>
                 {% endif %}
                 <li><a href="{{ url_for('authentification.logout') }}" class="hover:underline">Déconnexion</a></li>
             {% else %}

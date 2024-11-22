@@ -41,8 +41,5 @@ class Match:
 
 
 class Bookmaker:
-    def __init__(self, pseudo, created_at=None, updated_at=None, id_utilisateur=None):
-        self.pseudo = pseudo
-        self.created_at = created_at or datetime.now()
-        self.updated_at = updated_at or datetime.now()
+    def __init__(self, id_utilisateur=None):
         self.id_utilisateur = id_utilisateur

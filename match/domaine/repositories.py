@@ -171,31 +171,36 @@ class MatchRepository:
 
 class BookmakerRepository:
     @staticmethod
+    def create(bookmaker):
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        try:
+            existe = BookmakerRepository.get_by_user_id(bookmaker.id_utilisateur)
+            if existe:
+                return None
+
+            cursor.execute(
+                """
+                INSERT INTO public.bookmaker (id_utilisateur)
+                VALUES (%s) RETURNING id
+                """,
+                (bookmaker.id_utilisateur,)
+            )
+
+            bookmaker_id = cursor.fetchone()[0]
+            connection.commit()
+            return bookmaker_id
+        finally:
+            cursor.close()
+            connection.close()
+
+    @staticmethod
     def get_by_user_id(user_id):
         connection = get_db_connection()
         cursor = connection.cursor(cursor_factory=DictCursor)
         try:
             cursor.execute("SELECT * FROM public.bookmaker WHERE id_utilisateur = %s", (user_id,))
             return cursor.fetchone()
-        finally:
-            cursor.close()
-            connection.close()
-
-    @staticmethod
-    def create(bookmaker):
-        connection = get_db_connection()
-        cursor = connection.cursor()
-        try:
-            cursor.execute(
-                """
-                INSERT INTO public.bookmaker (pseudo, created_at, updated_at, id_utilisateur)
-                VALUES (%s, %s, %s, %s) RETURNING id
-                """,
-                (bookmaker.pseudo, bookmaker.created_at, bookmaker.updated_at, bookmaker.id_utilisateur)
-            )
-            bookmaker_id = cursor.fetchone()[0]
-            connection.commit()
-            return bookmaker_id
         finally:
             cursor.close()
             connection.close()

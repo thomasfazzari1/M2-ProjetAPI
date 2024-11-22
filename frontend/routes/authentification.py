@@ -77,4 +77,14 @@ def espace_bookmaker():
 
 @authentification_bp.route('/')
 def index():
+    if session.get('user_id') and not session.get('is_bookmaker'):
+        user_id = session['user_id']
+        try:
+            response = requests.get(f"{API_GATEWAY_URL}/parieur/{user_id}/cagnotte")
+            if response.status_code == 200:
+                session['cagnotte'] = response.json().get('cagnotte', 0.00)
+            else:
+                session['cagnotte'] = 0.00
+        except requests.exceptions.RequestException:
+            session['cagnotte'] = 0.00
     return render_template('index.html')

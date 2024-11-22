@@ -157,14 +157,7 @@ def create_match():
         bookmaker = BookmakerRepository.get_by_user_id(data["id_bookmaker"])
 
         if not bookmaker:
-            bookmaker_data = {
-                "pseudo": f"Bookmaker_{data['id_bookmaker']}",
-                "id_utilisateur": data["id_bookmaker"]
-            }
-            create_bookmaker_response = requests.post(f"{MATCH_SERVICE_URL}/create_bookmaker", json=bookmaker_data)
-
-            if create_bookmaker_response.status_code != 201:
-                return jsonify({"error": "Le bookmaker n'a pas pu être créé."}), 500
+            return
 
         match = Match(
             id_sport_associe=data["id_sport"],
@@ -198,6 +191,8 @@ def create_match():
 def get_all_matchs():
     matchs = MatchRepository.get_all_matchs()
     return jsonify(matchs), 200
+
+
 # endregion
 
 # region Bookmaker
@@ -207,10 +202,7 @@ def get_bookmaker(user_id):
     if not bookmaker:
         return jsonify({"error": "Bookmaker introuvable"}), 404
     return jsonify({
-        "id": bookmaker['id'],
-        "pseudo": bookmaker['pseudo'],
-        "created_at": bookmaker['created_at'],
-        "updated_at": bookmaker['updated_at']
+        "id": bookmaker['id']
     }), 200
 
 
@@ -218,14 +210,13 @@ def get_bookmaker(user_id):
 def create_bookmaker():
     data = request.get_json()
 
-    pseudo = data.get("pseudo")
     id_utilisateur = data.get("id_utilisateur")
 
-    if not pseudo or not id_utilisateur:
+    if not id_utilisateur:
         return jsonify({"error": "Données incomplètes"}), 400
 
     try:
-        bookmaker = Bookmaker(pseudo=pseudo, id_utilisateur=id_utilisateur)
+        bookmaker = Bookmaker(id_utilisateur=id_utilisateur)
         bookmaker_id = BookmakerRepository.create(bookmaker)
 
         return jsonify({"success": True, "bookmaker_id": bookmaker_id}), 201
