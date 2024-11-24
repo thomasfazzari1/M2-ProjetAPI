@@ -38,20 +38,18 @@ services:
       - PARI_DB_USER=${PARI_DB_USER}
       - PARI_DB_PASSWORD=${PARI_DB_PASSWORD}
 
-  api_gateway:
+  paiement:
     build:
-      context: gateway
+      context: paiement
     env_file:
       - .env
     ports:
       - "4000:5000"
-    depends_on:
-      - authentification
-      - match
     environment:
-      - AUTHENTIFICATION_SERVICE_URL=${AUTHENTIFICATION_SERVICE_URL}
-      - MATCH_SERVICE_URL=${MATCH_SERVICE_URL}
-      - PARI_SERVICE_URL=${PARI_SERVICE_URL}
+      - PAIEMENT_DB_HOST=${PAIEMENT_DB_HOST}
+      - PAIEMENT_DB_NAME=${PAIEMENT_DB_NAME}
+      - PAIEMENT_DB_USER=${PAIEMENT_DB_USER}
+      - PAIEMENT_DB_PASSWORD=${PAIEMENT_DB_PASSWORD}
 
   frontend:
     build:
@@ -66,6 +64,24 @@ services:
       - API_GATEWAY_URL=${API_GATEWAY_URL}
     volumes:
       - ./frontend:/app/frontend
+
+  api_gateway:
+    build:
+      context: gateway
+    env_file:
+      - .env
+    ports:
+      - "7000:5000"
+    depends_on:
+      - authentification
+      - match
+      - pari
+      - paiement
+    environment:
+      - AUTHENTIFICATION_SERVICE_URL=${AUTHENTIFICATION_SERVICE_URL}
+      - MATCH_SERVICE_URL=${MATCH_SERVICE_URL}
+      - PARI_SERVICE_URL=${PARI_SERVICE_URL}
+      - PAIEMENT_SERVICE_URL=${PAIEMENT_SERVICE_URL}
 
 volumes:
   mysql_data:

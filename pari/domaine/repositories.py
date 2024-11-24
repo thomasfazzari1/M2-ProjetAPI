@@ -58,3 +58,19 @@ class ParieurRepository:
         finally:
             cursor.close()
             connection.close()
+
+    @staticmethod
+    def update_cagnotte(id_utilisateur, nouvelle_cagnotte):
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        try:
+            cursor.execute(
+                """
+                UPDATE parieur SET cagnotte = %s WHERE id_utilisateur = %s
+                """,
+                (nouvelle_cagnotte, id_utilisateur)
+            )
+            connection.commit()
+        finally:
+            cursor.close()
+            connection.close()
