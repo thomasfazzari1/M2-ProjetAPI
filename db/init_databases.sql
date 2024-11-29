@@ -1,0 +1,6 @@
+CREATE DATABASE "Authentification";
+CREATE DATABASE "Match";
+CREATE DATABASE "Pari";
+CREATE DATABASE "Paiement";
+CREATE DATABASE "Panier";
+CREATE DATABASE "Notification";

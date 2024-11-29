@@ -83,5 +83,21 @@ services:
       - PARI_SERVICE_URL=${PARI_SERVICE_URL}
       - PAIEMENT_SERVICE_URL=${PAIEMENT_SERVICE_URL}
 
+  postgres:
+    image: postgres:15
+    container_name: postgres_container
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init_databases.sql:/docker-entrypoint-initdb.d/01-init_databases.sql
+      - ./db/init_tables.sql:/docker-entrypoint-initdb.d/02-init_tables.sql
+
 volumes:
   mysql_data:
+  postgres_data:
+

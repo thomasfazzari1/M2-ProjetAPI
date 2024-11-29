@@ -14,22 +14,21 @@ class PayeurRepository:
             cursor.close()
             connection.close()
 
-
-@staticmethod
-def create(id_utilisateur):
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    try:
-        cursor.execute(
-            "INSERT INTO public.payeur (id_utilisateur) VALUES (%s) RETURNING id",
-            (id_utilisateur,)
-        )
-        payeur_id = cursor.fetchone()[0]
-        connection.commit()
-        return payeur_id
-    finally:
-        cursor.close()
-        connection.close()
+    @staticmethod
+    def create(id_utilisateur):
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        try:
+            cursor.execute(
+                "INSERT INTO public.payeur (id_utilisateur) VALUES (%s) RETURNING id",
+                (id_utilisateur,)
+            )
+            payeur_id = cursor.fetchone()[0]
+            connection.commit()
+            return payeur_id
+        finally:
+            cursor.close()
+            connection.close()
 
 
 class PaiementRepository:
