@@ -20,7 +20,9 @@
                     class="col-span-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-600">
                 <option value="" disabled selected>Choisir un événement</option>
                 {% for evenement in evenements %}
-                <option value="{{ evenement['id'] }}">{{ evenement['nom'] }}</option>
+                <option value="{{ evenement['id'] }}" data-sport-id="{{ evenement['id_sport_associe'] }}">{{
+                    evenement['nom'] }}
+                </option>
                 {% endfor %}
             </select>
 
@@ -39,7 +41,9 @@
                     class="col-span-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-600">
                 <option value="" disabled selected>Choisir équipe à domicile</option>
                 {% for equipe in equipes %}
-                <option value="{{ equipe['id'] }}">{{ equipe['nom'] }}</option>
+                <option value="{{ equipe['id'] }}" data-sport-id="{{ equipe['id_sport_associe'] }}">{{ equipe['nom']
+                    }}
+                </option>
                 {% endfor %}
             </select>
 
@@ -51,7 +55,9 @@
                     class="col-span-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-600">
                 <option value="" disabled selected>Choisir équipe extérieure</option>
                 {% for equipe in equipes %}
-                <option value="{{ equipe['id'] }}">{{ equipe['nom'] }}</option>
+                <option value="{{ equipe['id'] }}" data-sport-id="{{ equipe['id_sport_associe'] }}">{{ equipe['nom']
+                    }}
+                </option>
                 {% endfor %}
             </select>
 
