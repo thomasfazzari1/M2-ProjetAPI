@@ -194,26 +194,14 @@ def create_match():
             return jsonify({"error": f"Le champ {champ} est requis."}), 400
 
     try:
-        sport = SportRepository.get_by_id(data["id_sport"])
-        if not sport:
-            return jsonify({"error": f"Aucun sport trouvé avec l'ID {data['id_sport']}."}), 404
-
-        evenement = EvenementRepository.get_by_id(data["id_evenement"])
-        if not evenement:
-            return jsonify({"error": f"Aucun événement trouvé avec l'ID {data['id_evenement']}."}), 404
-
-        equipe_domicile = EquipeRepository.get_by_id(data["id_eq_domicile"])
-        if not equipe_domicile:
-            return jsonify({"error": f"Aucune équipe trouvée avec l'ID domicile {data['id_eq_domicile']}."}), 404
-
-        equipe_exterieure = EquipeRepository.get_by_id(data["id_eq_exterieure"])
-        if not equipe_exterieure:
-            return jsonify({"error": f"Aucune équipe trouvée avec l'ID extérieure {data['id_eq_exterieure']}."}), 404
+        verifier_date(data["date"])
+        verifier_equipes(data["id_eq_domicile"], data["id_eq_exterieure"])
+        verifier_entites(data)
 
         bookmaker = BookmakerRepository.get_by_user_id(data["id_bookmaker"])
+
         if not bookmaker:
-            return jsonify(
-                {"error": f"Aucun bookmaker trouvé pour l'utilisateur avec l'ID {data['id_bookmaker']}."}), 404
+            return jsonify({"error": f"Aucun bookmaker trouvé pour l'utilisateur {data['id_bookmaker']}."}), 404
 
         match = Match(
             id_sport_associe=data["id_sport"],
@@ -232,20 +220,49 @@ def create_match():
         )
 
         match_id = MatchRepository.create(match)
-
-        if match_id is None:
+        if not match_id:
             return jsonify({"success": False, "message": "Erreur lors de la création du match."}), 500
 
         return jsonify({"success": True, "message": "Match créé avec succès.", "match_id": match_id}), 201
 
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+
     except Exception as e:
         return jsonify({"error": "Erreur interne du serveur."}), 500
-
 
 @match_bp.route('/get_all_matchs', methods=['GET'])
 def get_all_matchs():
     matchs = MatchRepository.get_all_matchs()
     return jsonify(matchs), 200
+
+def verifier_date(date_str):
+    from datetime import datetime
+    date_match = datetime.strptime(date_str, "%Y-%m-%d").date()
+    date_actuelle = datetime.now().date()
+    if date_match < date_actuelle:
+        raise ValueError("La date du match ne peut pas être dans le passé.")
+
+def verifier_equipes(id_eq_domicile, id_eq_exterieure):
+    if id_eq_domicile == id_eq_exterieure:
+        raise ValueError("Les équipes domicile et extérieure doivent être différentes.")
+
+def verifier_entites(data):
+    sport = SportRepository.get_by_id(data["id_sport"])
+    if not sport:
+        raise ValueError(f"Aucun sport trouvé avec l'ID {data['id_sport']}.")
+
+    evenement = EvenementRepository.get_by_id(data["id_evenement"])
+    if not evenement:
+        raise ValueError(f"Aucun événement trouvé avec l'ID {data['id_evenement']}.")
+
+    equipe_domicile = EquipeRepository.get_by_id(data["id_eq_domicile"])
+    if not equipe_domicile:
+        raise ValueError(f"Aucune équipe trouvée avec l'ID domicile {data['id_eq_domicile']}.")
+
+    equipe_exterieure = EquipeRepository.get_by_id(data["id_eq_exterieure"])
+    if not equipe_exterieure:
+        raise ValueError(f"Aucune équipe trouvée avec l'ID extérieure {data['id_eq_exterieure']}.")
 
 
 # endregion
