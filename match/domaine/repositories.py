@@ -194,6 +194,28 @@ class MatchRepository:
             cursor.close()
             connection.close()
 
+    @staticmethod
+    def verifier_conflit(equipe_id, date, heure_debut, heure_fin):
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        try:
+            query = """
+                SELECT COUNT(*) 
+                FROM rencontre
+                WHERE date = %s
+                AND (
+                    (heure_debut <= %s AND heure_fin > %s) OR
+                    (heure_debut < %s AND heure_fin >= %s)
+                )
+                AND (id_eq_domicile = %s OR id_eq_exterieure = %s)
+            """
+            cursor.execute(query, (date, heure_fin, heure_debut, heure_debut, heure_fin, equipe_id, equipe_id))
+            result = cursor.fetchone()
+            return result[0] > 0
+        finally:
+            cursor.close()
+            connection.close()
+
 
 # endregion
 

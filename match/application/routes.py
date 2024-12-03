@@ -198,6 +198,16 @@ def create_match():
         verifier_equipes(data["id_eq_domicile"], data["id_eq_exterieure"])
         verifier_entites(data)
 
+        conflit_domicile = MatchRepository.verifier_conflit(
+            data["id_eq_domicile"], data["date"], data["heure_debut"], data["heure_fin"]
+        )
+        conflit_exterieure = MatchRepository.verifier_conflit(
+            data["id_eq_exterieure"], data["date"], data["heure_debut"], data["heure_fin"]
+        )
+
+        if conflit_domicile or conflit_exterieure:
+            return jsonify({"error": "Une des équipes a déjà un match programmé dans ce créneau horaire."}), 400
+
         bookmaker = BookmakerRepository.get_by_user_id(data["id_bookmaker"])
 
         if not bookmaker:
