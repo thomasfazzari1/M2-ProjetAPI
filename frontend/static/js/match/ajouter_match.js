@@ -13,22 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Filtrage des matchs affichés en fonction du sport
-    const sportFilter = document.getElementById("sport_filtre");
-    if (sportFilter) {
-        sportFilter.addEventListener("change", function () {
-            const selectedSport = this.value;
-            const matchRows = document.querySelectorAll("tbody tr");
-
-            matchRows.forEach(row => {
-                const sportId = row.getAttribute("data-sport-id");
-                const shouldShow = selectedSport === "all" || selectedSport === sportId;
-                row.style.display = shouldShow ? "" : "none";
-            });
-        });
-    }
-
-    // Filtrage dynamique en fonction du sport
+    // Filtrage dynamique du formulaire en fonction du sport
     const sportSelect = document.getElementById("id_sport");
     const evenementSelect = document.getElementById("id_evenement");
     const eqDomicileSelect = document.getElementById("id_eq_domicile");
@@ -87,4 +72,20 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+
+    // Filtrage des matchs existants
+    document.getElementById('sport_filtre').addEventListener('change', function () {
+        const selectedSportId = this.value;
+        console.log("Sport sélectionné :", selectedSportId);
+
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            console.log("ID du sport de la ligne :", row.dataset.sportId);
+            if (selectedSportId === 'all' || row.dataset.sportId === selectedSportId) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
 });

@@ -170,7 +170,8 @@ class MatchRepository:
                 """
                 SELECT r.id, r.id_sport_associe, e.nom AS evenement_nom, eq1.nom AS equipe_domicile, 
                        r.valeur_cote_domicile, eq2.nom AS equipe_exterieure, r.valeur_cote_exterieure, 
-                       r.valeur_cote_match_nul, s.nom AS sport_nom, r.est_mis_en_avant, 0 AS nombre_paris
+                       r.valeur_cote_match_nul, r.date, r.heure_debut, r.heure_fin, 
+                       s.nom AS sport_nom, r.est_mis_en_avant, 0 AS nombre_paris
                 FROM public.rencontre r
                 JOIN public.sport s ON r.id_sport_associe = s.id
                 JOIN public.evenement e ON r.id_evenement_associe = e.id
@@ -183,16 +184,15 @@ class MatchRepository:
             matchs = [dict(zip(colnames, row)) for row in rows]
 
             for match in matchs:
+                match['date'] = match['date'].strftime('%d/%m/%Y') if match['date'] else 'Date inconnue'
+                match['heure_debut'] = match['heure_debut'].strftime('%H:%M') if match['heure_debut'] else '??:??'
+                match['heure_fin'] = match['heure_fin'].strftime('%H:%M') if match['heure_fin'] else '??:??'
                 match['est_mis_en_avant'] = "Oui" if match['est_mis_en_avant'] else "Non"
 
             return matchs
         finally:
             cursor.close()
             connection.close()
-
-    @staticmethod
-    def delete(id):
-        return delete_by_id("rencontre", id)
 
 
 # endregion
