@@ -43,7 +43,7 @@
                 {% endfor %}
             </select>
 
-            <input type="number" step="0.01" id="valeur_cote_eq_domicile" name="valeur_cote_eq_domicile" required
+            <input type="number" step="0.01" id="valeur_cote_domicile" name="valeur_cote_domicile" required
                    class="col-span-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-600"
                    placeholder="Cote équipe domicile">
 
@@ -55,7 +55,7 @@
                 {% endfor %}
             </select>
 
-            <input type="number" step="0.01" id="valeur_cote_eq_exterieure" name="valeur_cote_eq_exterieure" required
+            <input type="number" step="0.01" id="valeur_cote_exterieure" name="valeur_cote_exterieure" required
                    class="col-span-1 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-red-600"
                    placeholder="Cote équipe extérieure">
 
@@ -105,10 +105,10 @@
         <tr data-sport-id="{{ match['id_sport_associe'] }}">
             <td class="py-3 px-2">{{ match['evenement_nom'] }}</td>
             <td class="py-3 px-2">{{ match['equipe_domicile'] }}</td>
-            <td class="py-3 px-2">{{ match['valeur_cote_eq_domicile'] }}</td>
+            <td class="py-3 px-2">{{ match['valeur_cote_domicile'] }}</td>
             <td class="py-3 px-2">{{ match['valeur_cote_match_nul'] }}</td>
             <td class="py-3 px-2">{{ match['equipe_exterieure'] }}</td>
-            <td class="py-3 px-2">{{ match['valeur_cote_eq_exterieure'] }}</td>
+            <td class="py-3 px-2">{{ match['valeur_cote_exterieure'] }}</td>
             <td class="py-3 px-2">{{ match['est_mis_en_avant'] }}</td>
             <td class="py-3 px-2">{{ match['nombre_paris'] }}</td>
         </tr>

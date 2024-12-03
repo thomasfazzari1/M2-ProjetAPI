@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS public.rencontre (
     heure_debut TIME NOT NULL,
     heure_fin TIME NOT NULL,
     id_eq_domicile INT NOT NULL REFERENCES public.equipe (id),
-    valeur_cote_eq_domicile DECIMAL(5, 2) NOT NULL,
+    valeur_cote_domicile DECIMAL(5, 2) NOT NULL,
     id_eq_exterieure INT NOT NULL REFERENCES public.equipe (id),
     valeur_cote_exterieure DECIMAL(5, 2) NOT NULL,
     valeur_cote_match_nul DECIMAL(5, 2) NOT NULL,

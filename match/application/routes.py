@@ -39,14 +39,23 @@ def get_all_sports():
 
 @match_bp.route('/delete_sport', methods=['POST'])
 def delete_sport():
-    data = request.get_json()
-    sport_id = data.get("sport_id")
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "Aucune donnée fournie."}), 400
 
-    supprimes = SportRepository.delete(sport_id)
-    if supprimes == 0:
-        return jsonify({"success": False, "message": "Sport non trouvé."}), 404
+        sport_id = data.get("sport_id")
+        if not sport_id:
+            return jsonify({"error": "L'ID du sport est manquant."}), 400
 
-    return jsonify({"success": True, "message": "Sport supprimé avec succès."}), 200
+        supprimes = SportRepository.delete(sport_id)
+        if supprimes == 0:
+            return jsonify({"error": "Sport non trouvé."}), 404
+
+        return jsonify({"success": True, "message": "Sport supprimé avec succès."}), 200
+
+    except Exception as e:
+        return jsonify({"error": "Erreur interne du serveur."}), 500
 
 
 # endregion
@@ -65,6 +74,10 @@ def create_evenement():
     if not sport:
         return jsonify({"error": f"Aucun sport trouvé avec l'ID {id_sport_associe}."}), 404
 
+    evenement_existant = EvenementRepository.get_by_name_and_sport(nom, id_sport_associe)
+    if evenement_existant:
+        return jsonify({"error": "Un événement avec ce nom existe déjà pour ce sport."}), 400
+
     try:
         evenement = Evenement(nom=nom, id_sport_associe=id_sport_associe)
         evenement_id = EvenementRepository.create(evenement)
@@ -75,7 +88,6 @@ def create_evenement():
         return jsonify({"success": True, "message": "Evènement créé avec succès.", "evenement_id": evenement_id}), 201
 
     except Exception as e:
-        print(f"Erreur lors de la création de l'évènement : {e}")
         return jsonify({"error": "Erreur interne du serveur."}), 500
 
 
@@ -87,14 +99,23 @@ def get_all_evenements():
 
 @match_bp.route('/delete_evenement', methods=['POST'])
 def delete_evenement():
-    data = request.get_json()
-    evenement_id = data.get("evenement_id")
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "Aucune donnée fournie."}), 400
 
-    supprimes = EvenementRepository.delete(evenement_id)
-    if supprimes == 0:
-        return jsonify({"success": False, "message": "Evenement non trouvé."}), 404
+        evenement_id = data.get("evenement_id")
+        if not evenement_id:
+            return jsonify({"error": "L'ID de l'évènement est manquant."}), 400
 
-    return jsonify({"success": True, "message": "Evenement supprimé avec succès."}), 200
+        supprimes = EvenementRepository.delete(evenement_id)
+        if supprimes == 0:
+            return jsonify({"error": "Evenement non trouvé."}), 404
+
+        return jsonify({"success": True, "message": "Evenement supprimé avec succès."}), 200
+
+    except Exception as e:
+        return jsonify({"error": "Erreur interne du serveur."}), 500
 
 
 # endregion
@@ -137,14 +158,23 @@ def get_all_equipes():
 
 @match_bp.route('/delete_equipe', methods=['POST'])
 def delete_equipe():
-    data = request.get_json()
-    equipe_id = data.get("equipe_id")
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "Aucune donnée fournie."}), 400
 
-    supprimes = EquipeRepository.delete(equipe_id)
-    if supprimes == 0:
-        return jsonify({"success": False, "message": "Equipe non trouvée."}), 404
+        equipe_id = data.get("equipe_id")
+        if not equipe_id:
+            return jsonify({"error": "L'ID de l'équipe est manquant."}), 400
 
-    return jsonify({"success": True, "message": "Equipe supprimée avec succès."}), 200
+        supprimes = EquipeRepository.delete(equipe_id)
+        if supprimes == 0:
+            return jsonify({"error": "Equipe non trouvée."}), 404
+
+        return jsonify({"success": True, "message": "Equipe supprimée avec succès."}), 200
+
+    except Exception as e:
+        return jsonify({"error": "Erreur interne du serveur."}), 500
 
 
 # endregion
@@ -155,8 +185,8 @@ def create_match():
     data = request.get_json()
     champs = [
         "id_sport", "id_evenement", "date", "heure_debut", "heure_fin",
-        "id_eq_domicile", "valeur_cote_eq_domicile", "id_eq_exterieure",
-        "valeur_cote_eq_exterieure", "valeur_cote_match_nul", "id_bookmaker"
+        "id_eq_domicile", "valeur_cote_domicile", "id_eq_exterieure",
+        "valeur_cote_exterieure", "valeur_cote_match_nul", "id_bookmaker"
     ]
 
     for champ in champs:
@@ -192,9 +222,9 @@ def create_match():
             heure_debut=data["heure_debut"],
             heure_fin=data["heure_fin"],
             id_eq_domicile=data["id_eq_domicile"],
-            valeur_cote_eq_domicile=data["valeur_cote_eq_domicile"],
+            valeur_cote_domicile=data["valeur_cote_domicile"],
             id_eq_exterieure=data["id_eq_exterieure"],
-            valeur_cote_eq_exterieure=data["valeur_cote_eq_exterieure"],
+            valeur_cote_exterieure=data["valeur_cote_exterieure"],
             valeur_cote_match_nul=data["valeur_cote_match_nul"],
             created_by=bookmaker['id'],
             updated_by=bookmaker['id'],
@@ -209,7 +239,6 @@ def create_match():
         return jsonify({"success": True, "message": "Match créé avec succès.", "match_id": match_id}), 201
 
     except Exception as e:
-        print(f"Erreur lors de la création du match : {e}")
         return jsonify({"error": "Erreur interne du serveur."}), 500
 
 

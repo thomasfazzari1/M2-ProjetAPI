@@ -20,8 +20,8 @@ class Equipe:
 
 class Match:
     def __init__(self, id_sport_associe, id_evenement_associe, date, heure_debut, heure_fin,
-                 id_eq_domicile, valeur_cote_eq_domicile, id_eq_exterieure,
-                 valeur_cote_eq_exterieure, valeur_cote_match_nul, created_at=None, updated_at=None,
+                 id_eq_domicile, valeur_cote_domicile, id_eq_exterieure,
+                 valeur_cote_exterieure, valeur_cote_match_nul, created_at=None, updated_at=None,
                  created_by=None, updated_by=None, est_mis_en_avant=False):
         self.id_sport_associe = id_sport_associe
         self.id_evenement_associe = id_evenement_associe
@@ -29,9 +29,9 @@ class Match:
         self.heure_debut = heure_debut
         self.heure_fin = heure_fin
         self.id_eq_domicile = id_eq_domicile
-        self.valeur_cote_eq_domicile = valeur_cote_eq_domicile
+        self.valeur_cote_domicile = valeur_cote_domicile
         self.id_eq_exterieure = id_eq_exterieure
-        self.valeur_cote_eq_exterieure = valeur_cote_eq_exterieure
+        self.valeur_cote_exterieure = valeur_cote_exterieure
         self.valeur_cote_match_nul = valeur_cote_match_nul
         self.est_mis_en_avant = est_mis_en_avant
         self.created_at = created_at or datetime.now()

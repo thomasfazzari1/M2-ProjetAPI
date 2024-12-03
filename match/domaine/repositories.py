@@ -66,6 +66,27 @@ class EvenementRepository:
         return get_by_field("evenement", "id", id)
 
     @staticmethod
+    def get_by_name_and_sport(nom, id_sport_associe):
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        try:
+            cursor.execute(
+                """
+                SELECT * FROM public.evenement
+                WHERE nom = %s AND id_sport_associe = %s
+                """,
+                (nom, id_sport_associe)
+            )
+            row = cursor.fetchone()
+            if row:
+                colnames = [desc[0] for desc in cursor.description]
+                return dict(zip(colnames, row))
+            return None
+        finally:
+            cursor.close()
+            connection.close()
+
+    @staticmethod
     def delete(id):
         return delete_by_id("evenement", id)
 
@@ -120,14 +141,14 @@ class MatchRepository:
                 """
                 INSERT INTO public.rencontre (
                     id_sport_associe, id_evenement_associe, date, heure_debut, heure_fin,
-                    id_eq_domicile, valeur_cote_eq_domicile, id_eq_exterieure,
+                    id_eq_domicile, valeur_cote_domicile, id_eq_exterieure,
                     valeur_cote_exterieure, valeur_cote_match_nul, created_at,
                     updated_at, created_by, updated_by, est_mis_en_avant
                 ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id
                 """,
                 (
                     match.id_sport_associe, match.id_evenement_associe, match.date, match.heure_debut,
-                    match.heure_fin, match.id_eq_domicile, match.valeur_cote_eq_domicile,
+                    match.heure_fin, match.id_eq_domicile, match.valeur_cote_domicile,
                     match.id_eq_exterieure, match.valeur_cote_exterieure,
                     match.valeur_cote_match_nul, match.created_at, match.updated_at,
                     match.created_by, match.updated_by, match.est_mis_en_avant
@@ -148,7 +169,7 @@ class MatchRepository:
             cursor.execute(
                 """
                 SELECT r.id, r.id_sport_associe, e.nom AS evenement_nom, eq1.nom AS equipe_domicile, 
-                       r.valeur_cote_eq_domicile, eq2.nom AS equipe_exterieure, r.valeur_cote_exterieure, 
+                       r.valeur_cote_domicile, eq2.nom AS equipe_exterieure, r.valeur_cote_exterieure, 
                        r.valeur_cote_match_nul, s.nom AS sport_nom, r.est_mis_en_avant, 0 AS nombre_paris
                 FROM public.rencontre r
                 JOIN public.sport s ON r.id_sport_associe = s.id

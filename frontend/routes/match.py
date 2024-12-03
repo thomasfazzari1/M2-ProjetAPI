@@ -139,9 +139,9 @@ def ajouter_match():
             "heure_debut": request.form["heure_debut"],
             "heure_fin": request.form["heure_fin"],
             "id_eq_domicile": request.form["id_eq_domicile"],
-            "valeur_cote_eq_domicile": request.form["valeur_cote_eq_domicile"],
+            "valeur_cote_domicile": request.form["valeur_cote_domicile"],
             "id_eq_exterieure": request.form["id_eq_exterieure"],
-            "valeur_cote_eq_exterieure": request.form["valeur_cote_eq_exterieure"],
+            "valeur_cote_exterieure": request.form["valeur_cote_exterieure"],
             "valeur_cote_match_nul": request.form["valeur_cote_match_nul"],
             "id_bookmaker": session.get("user_id"),
             "est_mis_en_avant": request.form.get("est_mis_en_avant", "off") == "on"
